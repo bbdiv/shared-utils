@@ -1,0 +1,26 @@
+{
+  "name": "teste",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm exec vite",
+    "build": "pnpm exec vite build",
+    "lint": "pnpm exec tsc --noEmit",
+    "preview": "pnpm exec vite preview",
+    "prod:watch": "concurrently \"pnpm build --watch\" \"pnpm preview\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.2",
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2"
+  },
+  "dependencies": {
+    "single-spa": "^6.0.3"
+  }
+}
