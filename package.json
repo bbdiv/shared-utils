@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm exec vite",
+    "dev": "concurrently \"pnpm build --watch\" \"pnpm preview\"",
     "build": "pnpm exec vite build",
     "lint": "pnpm exec tsc --noEmit",
     "preview": "pnpm exec vite preview",
