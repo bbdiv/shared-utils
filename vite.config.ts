@@ -8,7 +8,10 @@ export default defineConfig({
       formats: ['system']
     },
     outDir: 'dist',
-    target: 'esnext'
+    target: 'esnext',
+    rollupOptions: {
+      external: ['react']
+    }
   },
   server: {
     port: 3015,
