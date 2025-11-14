@@ -1,25 +1,50 @@
 import { create } from 'zustand';
-// User store: manages logged user data
-export interface UserData {
-  name: string;
+
+
+
+export interface userAccount{
+  consent: Record<string, string>[];
   email: string;
-  access: string[];
-  permissions: string[];
-  image?: string;
+  first_access: boolean;
+  is_imported: boolean;
+  take_to_suite: boolean;
+  }
+  
+export interface UserData {
+  created_at: string;
+  deleted_at: string | null;
+  email: string;
+  groups: any[];
+  id: string;
+  name: string;
+  updated_at: string;
 }
+
+
 
 interface LoggedUserStore {
-  user: UserData | null;
-  setUser: (data: UserData) => void;
-  updateUser: (data: Partial<UserData>) => void;
-  clearUser: () => void;
+  userAccount: userAccount | null;
+  setUserAccount: (data: userAccount) => void;
+
+  userData: UserData | null;
+  setUserData: (data: UserData) => void;
+
+  customerList: any[];
+  setCustomerList: (data: any[]) => void;
+
+  clearStore: () => void;
 }
 
+// User store: manages logged user data
 export const useLoggedUserStore = create<LoggedUserStore>((set) => ({
-  user: null,
-  setUser: (data: UserData) => set({ user: data }),
-  updateUser: (data: Partial<UserData>) => set((state) => ({
-    user: state.user ? { ...state.user, ...data } : null
-  })),
-  clearUser: () => set({ user: null }),
+  userAccount: null,
+  setUserAccount: (data: userAccount) => set({ userAccount: data }),
+
+  userData: null,
+  setUserData: (data: UserData) => set({ userData: data }),
+
+  customerList : [],
+  setCustomerList: (data: any[]) => set({ customerList: data }),
+ 
+  clearStore: () => set({ userAccount: null, userData: null, customerList: []}),
 }));
