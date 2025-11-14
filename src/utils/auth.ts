@@ -19,3 +19,11 @@ export const saveAuth = (authData : AuthData) => {
     setCookie('refreshToken', authData.refreshToken, 30, domain);
     setCookie('idToken', authData.idToken, 1, domain);
 }
+
+
+
+// export const refreshToken = () => {}
+
+// export const clearAuth = () => {}
+
+// export const logout = () => {}
