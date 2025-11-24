@@ -1,15 +1,20 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
+    "paths": {
+      "@axios": ["./src/axios/index.ts"],
+      "@axios/*": ["./src/axios/*"]
+    },
     // File Layout
     // "rootDir": "./src",
     // "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
-    "types": [],
+    "module": "ESNext",
+    "target": "ESNext",
+    "types": ["vite/client"],
+    
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -40,7 +45,7 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "outDir": "dist/types",
     "rootDir": "src"

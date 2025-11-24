@@ -1,6 +1,12 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@axios': '/src/axios/index.ts',
+      '@axios/': '/src/axios/'
+    }
+  },
   build: {
     lib: {
       entry: 'src/index.ts',
