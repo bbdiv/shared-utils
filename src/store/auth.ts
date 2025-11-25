@@ -28,3 +28,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
 
 
+//hook for react components
+export const useAuth = () =>
+  useAuthStore(
+    useShallow((state) => ({
+      auth: state.auth,
+      setAuth: state.setAuth,
+      updateAuth: state.updateAuth,
+      clearAuth: state.clearAuth,
+    }))
+  );
+
+  //const { auth, setAuth } = useAuth();

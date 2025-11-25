@@ -1,3 +1,4 @@
+import createPersistor from "../persistor";
 import { useAuthStore, type AuthData } from "../store/auth";
 import { setCookie } from "./cookies";
 import {ssoInstance} from "@axios";
@@ -19,6 +20,10 @@ export const saveAuth = (authData : AuthData) => {
     //salva o refreshToken por 30 dias e o idToken por 1 dia
     setCookie('refreshToken', authData.refreshToken, 30, domain);
     setCookie('idToken', authData.idToken, 1, domain);
+
+
+    const persistor = createPersistor<AuthData>('indexedDB')
+    persistor.setItem('authData', authData);
 }
 
 export const login = async (credentials : {username: string, password: string, redirect: string}) => {

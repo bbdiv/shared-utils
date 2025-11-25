@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 
 
 
@@ -48,3 +49,17 @@ export const useLoggedUserStore = create<LoggedUserStore>((set) => ({
  
   clearStore: () => set({ userAccount: null, userData: null, customerList: []}),
 }));
+
+
+//hook for react components
+export const useLoggedUser = ()=>{
+  useLoggedUserStore(useShallow((state)=>({
+    userAccount: state.userAccount,
+    setUserAccount: state.setUserAccount,
+    userData: state.userData,
+    setUserData: state.setUserData,
+    customerList: state.customerList,
+    setCustomerList: state.setCustomerList,
+    clearStore: state.clearStore,
+  })))
+}

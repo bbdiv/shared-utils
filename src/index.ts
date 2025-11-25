@@ -1,6 +1,7 @@
 import { useAuthStore } from './store/auth';
 import { useLoggedUserStore } from './store/loggedUser';
 import { useShallow } from 'zustand/react/shallow';
+import init from './utils/init';
 
 //functions
 export * from './utils/cookies';
@@ -24,7 +25,7 @@ export * from './persistor';
 
 
 
-
+init()
 
 
 
