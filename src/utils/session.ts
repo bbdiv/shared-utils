@@ -57,3 +57,10 @@ export const getCustomerList = async (email: string, module?: string) => {
     console.error("[PUM] Error fetching customer list:", error);
   }
 };
+
+export const saveCustomerId = (customerId: string) => {
+  const persistor = createPersistor("indexedDB");
+  persistor.setItem("customerId", customerId);
+
+  useSessionStore.getState().setCustomerId(customerId);
+};
