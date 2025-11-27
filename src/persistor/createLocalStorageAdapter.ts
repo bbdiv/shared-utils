@@ -1,4 +1,4 @@
-import type { StorageAdapter, CacheItem } from './types';
+import type { StorageAdapter, CacheItem } from "./types";
 
 // LocalStorage adapter implementation
 function createLocalStorageAdapter<T>(): StorageAdapter<T> {

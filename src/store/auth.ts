@@ -1,6 +1,5 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
-
 
 // Auth store: manages authentication data
 export interface AuthData {
@@ -26,8 +25,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
   clearAuth: () => set({ auth: null }),
 }));
 
-
-
 //hook for react components
 export const useAuth = () =>
   useAuthStore(
@@ -39,4 +36,4 @@ export const useAuth = () =>
     }))
   );
 
-  //const { auth, setAuth } = useAuth();
+//const { auth, setAuth } = useAuth();

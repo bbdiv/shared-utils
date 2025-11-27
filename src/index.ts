@@ -1,41 +1,36 @@
-import { useAuthStore } from './store/auth';
-import { useLoggedUserStore } from './store/loggedUser';
-import { useShallow } from 'zustand/react/shallow';
-import init from './utils/init';
+import { useAuthStore } from "./store/auth";
+import { useSessionStore } from "./store/session";
+import { useShallow } from "zustand/react/shallow";
+import init from "./utils/init";
 
 //functions
-export * from './utils/cookies';
-export * from './utils/auth';
+export * from "./utils/cookies";
+export * from "./utils/auth";
+export * from "./utils/session";
 
 //stores
-export * from './store/auth';
-export * from './store/loggedUser';
+export * from "./store/auth";
+export * from "./store/session";
 
 //zustand
 export { useShallow };
 
 //persistor
-export * from './persistor';
+export * from "./persistor";
 
+init();
 
-
-
-
-
-
-
-
-init()
-
-
-
+//
+//
+//
+//
+//
+//
+//
 //debug abaixo, apagar depois
-console.log('Shared utils LOADED.', useAuthStore.getState());
-
 const printState = () => {
-    console.log('Auth store state:', useAuthStore.getState());
-    console.log('Logged user store state:', useLoggedUserStore.getState());
- 
-}
+  console.log("Auth store state:", useAuthStore.getState());
+  console.log("Session store:", useSessionStore.getState());
+};
 
 (globalThis as any).printState = printState;

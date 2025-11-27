@@ -1,12 +1,18 @@
-import createIndexedDBAdapter from './createIndexedDBAdapter';
-import createLocalStorageAdapter from './createLocalStorageAdapter';
-import type { CacheItem, CacheResult, StorageAdapter } from './types';
+import createIndexedDBAdapter from "./createIndexedDBAdapter";
+import createLocalStorageAdapter from "./createLocalStorageAdapter";
+import type { CacheItem, CacheResult, StorageAdapter } from "./types";
 
 // Create persistor with common logic regardless of storage type
-const createPersistor = <T = unknown>(storageType: 'localStorage' | 'indexedDB', staleTime = 1 * 60 * 1000) => {
+const createPersistor = <T = unknown>(
+  storageType: "localStorage" | "indexedDB",
+  staleTime = 1 * 60 * 1000 * 1
+) => {
+  // stale 10min
   // Select the appropriate storage adapter
   const storage: StorageAdapter<T> =
-    storageType === 'indexedDB' ? createIndexedDBAdapter<T>() : createLocalStorageAdapter<T>();
+    storageType === "indexedDB"
+      ? createIndexedDBAdapter<T>()
+      : createLocalStorageAdapter<T>();
 
   // Common logic for determining if data is stale
   const isDataStale = (timestamp: number): boolean => {
@@ -17,9 +23,12 @@ const createPersistor = <T = unknown>(storageType: 'localStorage' | 'indexedDB',
   return {
     async get(key: string): Promise<T | null> {
       const item = await storage.read(key);
-      if (!item || isDataStale(item.timestamp)) {
+      if (!item) {
         return null;
       }
+      // if (!item || isDataStale(item.timestamp)) {
+      //   return null;
+      // }
       return item.value;
     },
 

@@ -1,5 +1,5 @@
-import { get, set, del } from 'idb-keyval';
-import type { StorageAdapter, CacheItem } from './types';
+import { get, set, del } from "idb-keyval";
+import type { StorageAdapter, CacheItem } from "./types";
 
 // IndexedDB adapter implementation
 function createIndexedDBAdapter<T>(): StorageAdapter<T> {
