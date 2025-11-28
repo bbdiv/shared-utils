@@ -9,6 +9,7 @@ export const ssoInstance = (
   axios.create({
     baseURL: `${apiEnvironments.sso.baseURL}/${version}`,
     timeout: configs?.timeout ?? 10000,
+    withCredentials: configs?.withCredentials ?? false,
     headers: {
       "Content-Type": "application/json",
       ...(configs?.headers ?? {}),

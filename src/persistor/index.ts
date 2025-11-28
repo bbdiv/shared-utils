@@ -5,9 +5,8 @@ import type { CacheItem, CacheResult, StorageAdapter } from "./types";
 // Create persistor with common logic regardless of storage type
 const createPersistor = <T = unknown>(
   storageType: "localStorage" | "indexedDB",
-  staleTime = 1 * 60 * 1000 * 1
+  staleTime = 1 * 60 * 1000 * 10 // default stale time 10 minutes
 ) => {
-  // stale 10min
   // Select the appropriate storage adapter
   const storage: StorageAdapter<T> =
     storageType === "indexedDB"
@@ -23,12 +22,9 @@ const createPersistor = <T = unknown>(
   return {
     async get(key: string): Promise<T | null> {
       const item = await storage.read(key);
-      if (!item) {
+      if (!item || isDataStale(item.timestamp)) {
         return null;
       }
-      // if (!item || isDataStale(item.timestamp)) {
-      //   return null;
-      // }
       return item.value;
     },
 

@@ -13,13 +13,13 @@ export const saveAuth = (authData: AuthData) => {
   useAuthStore.getState().setAuth(authData);
 
   //salva os tokens nos cookies
-  const domain = window.location.hostname;
+  const domain = window.location.hostname.replace(/^plataforma\./, ".");
 
   setCookie("accessToken", authData.accessToken, 1, domain);
   setCookie("refreshToken", authData.refreshToken, 30, domain);
   setCookie("idToken", authData.idToken, 1, domain);
 
-  const persistor = createPersistor<AuthData>("indexedDB", 30 * 60 * 1000); //stale time 30 minutes
+  const persistor = createPersistor<AuthData>("indexedDB");
   persistor.setItem("authData", authData);
 };
 
@@ -50,7 +50,12 @@ export const login = async (credentials: {
   }
 };
 
-// export const refreshToken = () => {}
+export const refreshToken = async () => {
+  const response = await ssoInstance("v1", { withCredentials: true }).post(
+    "/retrieve-new-token"
+  );
+  console.log("response", response);
+};
 
 // export const clearAuth = () => {}
 

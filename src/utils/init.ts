@@ -3,12 +3,13 @@ import { useAuthStore } from "../store/auth";
 
 import type { AuthData } from "../store/auth";
 import { useSessionStore } from "../store/session";
+import { refreshToken } from "./auth";
 import { getCustomerList } from "./session";
 
 // save auth data from persistor to zustand store
 const initAuth = async () => {
-  const persistor = createPersistor<AuthData>("indexedDB");
-  const authData = await persistor.get("authData");
+  const persistor = createPersistor<AuthData>("indexedDB"); // stale time 30 minutes
+  const { value: authData, isStale } = await persistor.getWithMeta("authData");
   console.log("[PUM] INIT authData from persistor:", authData);
 
   function isValidAuthData(data: any): data is AuthData {
@@ -19,6 +20,12 @@ const initAuth = async () => {
       typeof data.idToken === "string" &&
       typeof data.refreshToken === "string"
     );
+  }
+
+  if (isStale) {
+    console.log("[PUM] Auth data is stale");
+    await refreshToken();
+    return;
   }
 
   if (authData && isValidAuthData(authData)) {

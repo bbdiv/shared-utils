@@ -18,7 +18,7 @@ export const saveUserLogin = (
   sessionStore.setUserData(userData);
   sessionStore.setCustomerList(customerList);
 
-  const persistor = createPersistor("indexedDB", 30 * 60 * 1000); //stale time 30 minutes
+  const persistor = createPersistor("indexedDB"); //stale time 30 minutes
   persistor.setItem("userAccount", userAccount);
   persistor.setItem("userData", userData);
   persistor.setItem("customerList", customerList);
