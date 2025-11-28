@@ -4,8 +4,7 @@ import type { CacheItem, CacheResult, StorageAdapter } from "./types";
 
 // Create persistor with common logic regardless of storage type
 const createPersistor = <T = unknown>(
-  storageType: "localStorage" | "indexedDB",
-  staleTime = 1 * 60 * 1000 * 10 // default stale time 10 minutes
+  storageType: "localStorage" | "indexedDB"
 ) => {
   // Select the appropriate storage adapter
   const storage: StorageAdapter<T> =
@@ -15,7 +14,7 @@ const createPersistor = <T = unknown>(
 
   // Common logic for determining if data is stale
   const isDataStale = (timestamp: number): boolean => {
-    const isStale = Date.now() - timestamp > staleTime;
+    const isStale = Date.now() > timestamp;
     return isStale;
   };
 
@@ -42,10 +41,10 @@ const createPersistor = <T = unknown>(
       };
     },
 
-    async setItem(key: string, value: T): Promise<void> {
+    async setItem(key: string, value: T, staleTime: number): Promise<void> {
       const cacheItem: CacheItem<T> = {
         value,
-        timestamp: Date.now(),
+        timestamp: Date.now() + staleTime,
       };
       await storage.write(key, cacheItem);
     },
@@ -56,4 +55,6 @@ const createPersistor = <T = unknown>(
   };
 };
 
-export default createPersistor;
+const persistor = createPersistor("indexedDB");
+
+export default persistor;
