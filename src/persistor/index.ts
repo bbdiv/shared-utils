@@ -24,6 +24,8 @@ const createPersistor = <T = unknown>(
       if (!item || isDataStale(item.timestamp)) {
         return null;
       }
+      console.log("[PUM] GET item from persistor:", key, item);
+
       return item.value;
     },
 
@@ -41,7 +43,11 @@ const createPersistor = <T = unknown>(
       };
     },
 
-    async setItem(key: string, value: T, staleTime: number): Promise<void> {
+    async setItem(
+      key: string,
+      value: T,
+      staleTime: number = 10 * 60 * 1000 // default stale time 10 minutes
+    ): Promise<void> {
       const cacheItem: CacheItem<T> = {
         value,
         timestamp: Date.now() + staleTime,

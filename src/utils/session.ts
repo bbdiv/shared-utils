@@ -5,7 +5,7 @@ import {
   type userAccount,
   type UserData,
 } from "../store/session";
-import createPersistor from "../persistor";
+import persistor from "../persistor";
 
 export const saveUserLogin = (
   userAccount: userAccount,
@@ -18,7 +18,6 @@ export const saveUserLogin = (
   sessionStore.setUserData(userData);
   sessionStore.setCustomerList(customerList);
 
-  const persistor = createPersistor("indexedDB"); //stale time 30 minutes
   persistor.setItem("userAccount", userAccount);
   persistor.setItem("userData", userData);
   persistor.setItem("customerList", customerList);
@@ -28,7 +27,6 @@ export const saveCustomerList = (customerList: any[]) => {
   const sessionStore = useSessionStore.getState();
   sessionStore.setCustomerList(customerList);
 
-  const persistor = createPersistor("indexedDB");
   persistor.setItem("customerList", customerList);
 };
 
@@ -59,7 +57,6 @@ export const getCustomerList = async (email: string, module?: string) => {
 };
 
 export const saveCustomerId = (customerId: string) => {
-  const persistor = createPersistor("indexedDB");
   persistor.setItem("customerId", customerId);
 
   useSessionStore.getState().setCustomerId(customerId);

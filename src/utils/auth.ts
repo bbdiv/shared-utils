@@ -1,4 +1,4 @@
-import createPersistor from "../persistor";
+import persistor from "../persistor";
 import { useAuthStore, type AuthData } from "../store/auth";
 import { setCookie } from "./cookies";
 import { ssoInstance } from "@axios";
@@ -19,8 +19,7 @@ export const saveAuth = (authData: AuthData) => {
   setCookie("refreshToken", authData.refreshToken, 30, domain);
   setCookie("idToken", authData.idToken, 1, domain);
 
-  const persistor = createPersistor<AuthData>("indexedDB");
-  persistor.setItem("authData", authData);
+  persistor.setItem("authData", authData, 1 * 60 * 1000 * 10 * 6); //stale time 10 minutes
 };
 
 export const login = async (credentials: {
@@ -51,10 +50,15 @@ export const login = async (credentials: {
 };
 
 export const refreshToken = async () => {
-  const response = await ssoInstance("v1", { withCredentials: true }).post(
-    "/retrieve-new-token"
-  );
-  console.log("response", response);
+  try {
+    const response = await ssoInstance("v1", { withCredentials: true }).post(
+      "/retrieve-new-token"
+    );
+    console.log("response", response);
+  } catch (error) {
+    console.log("error refreshing token", error);
+    if (window.location.pathname !== "/login") window.location.href = "/login";
+  }
 };
 
 // export const clearAuth = () => {}

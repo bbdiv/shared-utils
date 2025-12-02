@@ -1,4 +1,4 @@
-import createPersistor from "../persistor";
+import persistor from "../persistor";
 import { useAuthStore } from "../store/auth";
 
 import type { AuthData } from "../store/auth";
@@ -8,7 +8,6 @@ import { getCustomerList } from "./session";
 
 // save auth data from persistor to zustand store
 const initAuth = async () => {
-  const persistor = createPersistor<AuthData>("indexedDB"); // stale time 30 minutes
   const { value: authData, isStale } = await persistor.getWithMeta("authData");
   console.log("[PUM] INIT authData from persistor:", authData);
 
@@ -35,13 +34,19 @@ const initAuth = async () => {
 
 // save session data from persistor to zustand store
 const initSession = async () => {
-  const persistor = createPersistor("indexedDB");
-
   const userAccount = await persistor.get("userAccount");
   const userData = await persistor.get("userData");
   const customerId = await persistor.get("customerId");
   const constructionId = await persistor.get("constructionId");
   const customerList = await persistor.get("customerList");
+
+  console.log("[PUM] INIT session data from persistor:", {
+    userAccount,
+    userData,
+    customerId,
+    constructionId,
+    customerList,
+  });
 
   if (customerList) {
     useSessionStore.getState().setCustomerList(customerList);
