@@ -6,18 +6,32 @@
   "scripts": {
     "dev": "concurrently \"pnpm build --watch\" \"pnpm preview\"",
     "build": "pnpm exec vite build",
-    "lint": "pnpm exec tsc --noEmit",
+    "type-check": "pnpm exec tsc --noEmit",
+    "lint": "pnpm exec eslint .",
+    "lint:fix": "pnpm exec eslint . --fix",
+    "format": "pnpm exec prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "pnpm exec prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "preview": "pnpm exec vite preview",
-    "prod:watch": "concurrently \"pnpm build --watch\" \"pnpm preview\""
+    "prod:watch": "concurrently \"pnpm build --watch\" \"pnpm preview\"",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.18.2",
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
     "@types/node": "^24.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
     "concurrently": "^9.2.1",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.18.2",
     "vite": "^7.2.2"
   },
   "dependencies": {
@@ -28,5 +42,14 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
   }
 }

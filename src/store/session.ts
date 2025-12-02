@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { useShallow } from "zustand/react/shallow";
+import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 
 export interface userAccount {
   consent: Record<string, string>[];
@@ -13,7 +13,7 @@ export interface UserData {
   created_at: string;
   deleted_at: string | null;
   email: string;
-  groups: any[];
+  groups: unknown[];
   id: string;
   name: string;
   updated_at: string;
@@ -26,8 +26,8 @@ interface SessionStore {
   userData: UserData | null;
   setUserData: (data: UserData) => void;
 
-  customerList: any[] | null;
-  setCustomerList: (list: any[]) => void;
+  customerList: unknown[] | null;
+  setCustomerList: (list: unknown[]) => void;
 
   customerId: string | null;
   setCustomerId: (id: string) => void;
@@ -46,20 +46,20 @@ export const useSessionStore = create<SessionStore>((set) => ({
   setUserData: (data: UserData) => set({ userData: data }),
 
   customerList: [],
-  setCustomerList: (list: any[]) => set({ customerList: list }),
+  setCustomerList: (list: unknown[]) => set({ customerList: list }),
 
-  customerId: "",
+  customerId: '',
   setCustomerId: (id: string) => set({ customerId: id }),
 
-  constructionId: "",
+  constructionId: '',
   setConstructionId: (id: string) => set({ constructionId: id }),
 
   clearStore: () =>
     set({
       userAccount: null,
       userData: null,
-      customerId: "",
-      constructionId: "",
+      customerId: '',
+      constructionId: '',
     }),
 }));
 

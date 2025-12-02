@@ -1,7 +1,7 @@
-import persistor from "../persistor";
-import { useAuthStore, type AuthData } from "../store/auth";
-import { setCookie } from "./cookies";
-import { ssoInstance } from "@axios";
+import persistor from '../persistor';
+import { useAuthStore, type AuthData } from '../store/auth';
+import { setCookie } from './cookies';
+import { ssoInstance } from '@axios';
 
 /**
  * Salva os tokens de autenticação na store Auth e nos cookies do navegador.
@@ -13,13 +13,13 @@ export const saveAuth = (authData: AuthData) => {
   useAuthStore.getState().setAuth(authData);
 
   //salva os tokens nos cookies
-  const domain = window.location.hostname.replace(/^plataforma\./, ".");
+  const domain = window.location.hostname.replace(/^plataforma\./, '.');
 
-  setCookie("accessToken", authData.accessToken, 1, domain);
-  setCookie("refreshToken", authData.refreshToken, 30, domain);
-  setCookie("idToken", authData.idToken, 1, domain);
+  setCookie('accessToken', authData.accessToken, 1, domain);
+  setCookie('refreshToken', authData.refreshToken, 30, domain);
+  setCookie('idToken', authData.idToken, 1, domain);
 
-  persistor.setItem("authData", authData, 1 * 60 * 1000 * 10 * 6); //stale time 10 minutes
+  persistor.setItem('authData', authData, 1 * 60 * 1000 * 10 * 6); //stale time 10 minutes
 };
 
 export const login = async (credentials: {
@@ -28,21 +28,23 @@ export const login = async (credentials: {
   redirect: string;
 }) => {
   try {
-    const response = await ssoInstance().post("/auth", credentials);
-    console.log("response", response);
+    const response = await ssoInstance().post('/auth', credentials);
+    console.log('response', response);
     if (response.status === 200) {
       saveAuth(response.data.data);
       return response.data.data;
     } else {
-      const error = new Error("Login failed");
-      (error as any).response = response;
+      const error = new Error('Login failed');
+      (error as Error & { response?: unknown }).response = response;
       throw error;
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     // If axios throws, attach its response if available
-    if (err.response) {
-      const error = new Error("Login failed");
-      (error as any).response = err.response;
+    if (err && typeof err === 'object' && 'response' in err) {
+      const error = new Error('Login failed');
+      (error as Error & { response?: unknown }).response = (
+        err as { response: unknown }
+      ).response;
       throw error;
     }
     throw err;
@@ -51,13 +53,13 @@ export const login = async (credentials: {
 
 export const refreshToken = async () => {
   try {
-    const response = await ssoInstance("v1", { withCredentials: true }).post(
-      "/retrieve-new-token"
+    const response = await ssoInstance('v1', { withCredentials: true }).post(
+      '/retrieve-new-token'
     );
-    console.log("response", response);
+    console.log('response', response);
   } catch (error) {
-    console.log("error refreshing token", error);
-    if (window.location.pathname !== "/login") window.location.href = "/login";
+    console.log('error refreshing token', error);
+    if (window.location.pathname !== '/login') window.location.href = '/login';
   }
 };
 

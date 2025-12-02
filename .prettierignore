@@ -1,0 +1,9 @@
+node_modules
+dist
+*.config.js
+*.config.ts
+.husky
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
