@@ -19,7 +19,8 @@ export const saveAuth = (authData: AuthData) => {
   setCookie("refreshToken", authData.refreshToken, 30, domain);
   setCookie("idToken", authData.idToken, 1, domain);
 
-  persistor.setItem("authData", authData, 1 * 60 * 1000 * 10 * 6); //stale time 10 minutes
+  // persistor.setItem("authData", authData, 1 * 1000 * 60 * 60 ); //stale time 1 hour
+  persistor.setItem("authData", authData, 1 * 1000 * 10 ); //stale time 10 sec
 };
 
 export const login = async (credentials: {
@@ -54,6 +55,7 @@ export const refreshToken = async () => {
     const response = await ssoInstance("v1", { withCredentials: true }).post(
       "/retrieve-new-token"
     );
+    saveAuth(response.data.data);
     console.log("response", response);
   } catch (error) {
     console.log("error refreshing token", error);
