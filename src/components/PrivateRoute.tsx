@@ -20,28 +20,33 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { auth } = useAuth();
   const [isValidating, setIsValidating] = useState(true);
   const isRefreshingRef = useRef(false);
-
-  
+  const lastAttemptedTokenRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     const validateAndRefreshToken = async () => {
       const token = auth?.idToken;
       
       if (!isTokenValid(token)) {
-        // Only attempt refresh if not already refreshing
-        if (!isRefreshingRef.current) {
+        // Only attempt refresh if not already refreshing AND token has changed
+        // This prevents infinite loops when refresh succeeds but token remains invalid
+        const tokenChanged = lastAttemptedTokenRef.current !== token;
+        if (!isRefreshingRef.current && tokenChanged) {
           isRefreshingRef.current = true;
+          lastAttemptedTokenRef.current = token;
           setIsValidating(true);
           try {
             await refreshToken();
             // After refresh, saveAuth updates the store synchronously
             // Check the store directly to get the latest token value
             const updatedAuth = useAuthStore.getState().auth;
-            if (isTokenValid(updatedAuth?.idToken)) {
+            const newToken = updatedAuth?.idToken;
+            if (isTokenValid(newToken)) {
               setIsValidating(false);
+              lastAttemptedTokenRef.current = undefined; // Reset on success
             } else {
               // Edge case: refresh succeeded but token is still invalid
-              // Stop validating to prevent infinite loading
+              // Update ref to the new invalid token to prevent retrying the same value
+              lastAttemptedTokenRef.current = newToken;
               setIsValidating(false);
             }
             // The effect will also re-run because auth?.idToken changed
@@ -51,12 +56,18 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
             console.error("Failed to refresh token:", error);
             isRefreshingRef.current = false;
             setIsValidating(false);
+            // Reset on error to allow retry if token changes
+            lastAttemptedTokenRef.current = undefined;
           }
+        } else if (!tokenChanged) {
+          // Token is invalid but hasn't changed since last attempt - stop validating
+          setIsValidating(false);
         }
       } else {
         // Token is valid
         isRefreshingRef.current = false;
         setIsValidating(false);
+        lastAttemptedTokenRef.current = undefined; // Reset on valid token
       }
     };
 
