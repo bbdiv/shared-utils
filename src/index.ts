@@ -18,6 +18,9 @@ export { useShallow };
 //persistor
 export * from "./persistor";
 
+//components
+export { PrivateRoute } from "./components/PrivateRoute";
+
 init();
 
 //

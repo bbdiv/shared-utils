@@ -60,6 +60,7 @@ export const refreshToken = async () => {
   } catch (error) {
     console.log("error refreshing token", error);
     if (window.location.pathname !== "/login") window.location.href = "/login";
+    
   }
 };
 
