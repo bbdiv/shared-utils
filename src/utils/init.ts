@@ -39,6 +39,7 @@ const initSession = async () => {
   const customerId = await persistor.get("customerId");
   const constructionId = await persistor.get("constructionId");
   const customerList = await persistor.get("customerList");
+  const selectedCustomer = await persistor.get("selectedCustomer");
 
   console.log("[PUM] INIT session data from persistor:", {
     userAccount,
@@ -46,6 +47,7 @@ const initSession = async () => {
     customerId,
     constructionId,
     customerList,
+    selectedCustomer,
   });
 
   if (customerList) {
@@ -57,6 +59,7 @@ const initSession = async () => {
     userData,
     customerId,
     constructionId,
+    selectedCustomer,
   });
 
   if (userAccount) {
@@ -73,6 +76,9 @@ const initSession = async () => {
   }
   if (customerList) {
     useSessionStore.getState().setCustomerList(customerList);
+  }
+  if (selectedCustomer) {
+    useSessionStore.getState().setSelectedCustomer(selectedCustomer);
   }
 };
 

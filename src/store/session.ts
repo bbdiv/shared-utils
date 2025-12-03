@@ -32,6 +32,9 @@ interface SessionStore {
   customerId: string | null;
   setCustomerId: (id: string) => void;
 
+  selectedCustomer: any | null;
+  setSelectedCustomer: (customer: any) => void;
+
   constructionId: string | null;
   setConstructionId: (id: string) => void;
 
@@ -50,6 +53,9 @@ export const useSessionStore = create<SessionStore>((set) => ({
 
   customerId: "",
   setCustomerId: (id: string) => set({ customerId: id }),
+
+  selectedCustomer: null,
+  setSelectedCustomer: (customer: any) => set({ selectedCustomer: customer }),
 
   constructionId: "",
   setConstructionId: (id: string) => set({ constructionId: id }),
@@ -75,6 +81,8 @@ export const useSession = () =>
       setCustomerList: state.setCustomerList,
       customerId: state.customerId,
       setCustomerId: state.setCustomerId,
+      selectedCustomer: state.selectedCustomer,
+      setSelectedCustomer: state.setSelectedCustomer,
       constructionId: state.constructionId,
       setConstructionId: state.setConstructionId,
       clearStore: state.clearStore,
