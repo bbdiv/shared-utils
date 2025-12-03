@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, type ReactNode } from "react";
-import { useAuth } from "../store/auth";
+import { useAuth, useAuthStore } from "../store/auth";
 import { refreshToken } from "../utils/auth";
 
 interface PrivateRouteProps {
@@ -34,7 +34,17 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
           setIsValidating(true);
           try {
             await refreshToken();
-            // After refresh, the auth store will update and this effect will re-run
+            // After refresh, saveAuth updates the store synchronously
+            // Check the store directly to get the latest token value
+            const updatedAuth = useAuthStore.getState().auth;
+            if (isTokenValid(updatedAuth?.idToken)) {
+              setIsValidating(false);
+            } else {
+              // Edge case: refresh succeeded but token is still invalid
+              // Stop validating to prevent infinite loading
+              setIsValidating(false);
+            }
+            // The effect will also re-run because auth?.idToken changed
             isRefreshingRef.current = false;
           } catch (error) {
             // refreshToken already handles redirect to /login on error
