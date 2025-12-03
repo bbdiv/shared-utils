@@ -16,7 +16,7 @@ const isTokenValid = (token: string | undefined): boolean => {
     return token != null && token.trim() !== "";
   };
 
-export const PrivateRoute = ({ children }: PrivateRouteProps) => {
+const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { auth } = useAuth();
   const [isValidating, setIsValidating] = useState(true);
   const isRefreshingRef = useRef(false);
@@ -83,3 +83,4 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
   return <>{children}</>;
 };
 
+export default PrivateRoute;
