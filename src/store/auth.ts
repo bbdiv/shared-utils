@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { useShallow } from "zustand/react/shallow";
+import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 
 // Auth store: manages authentication data
 export interface AuthData {

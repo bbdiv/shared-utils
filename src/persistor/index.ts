@@ -1,14 +1,14 @@
-import createIndexedDBAdapter from "./createIndexedDBAdapter";
-import createLocalStorageAdapter from "./createLocalStorageAdapter";
-import type { CacheItem, CacheResult, StorageAdapter } from "./types";
+import createIndexedDBAdapter from './createIndexedDBAdapter';
+import createLocalStorageAdapter from './createLocalStorageAdapter';
+import type { CacheItem, CacheResult, StorageAdapter } from './types';
 
 // Create persistor with common logic regardless of storage type
 const createPersistor = <T = unknown>(
-  storageType: "localStorage" | "indexedDB"
+  storageType: 'localStorage' | 'indexedDB'
 ) => {
   // Select the appropriate storage adapter
   const storage: StorageAdapter<T> =
-    storageType === "indexedDB"
+    storageType === 'indexedDB'
       ? createIndexedDBAdapter<T>()
       : createLocalStorageAdapter<T>();
 
@@ -24,7 +24,7 @@ const createPersistor = <T = unknown>(
       if (!item || isDataStale(item.timestamp)) {
         return null;
       }
-      console.log("[PUM] GET item from persistor:", key, item);
+      console.log('[PUM] GET item from persistor:', key, item);
 
       return item.value;
     },
@@ -61,6 +61,6 @@ const createPersistor = <T = unknown>(
   };
 };
 
-const persistor = createPersistor("indexedDB");
+const persistor = createPersistor('indexedDB');
 
 export default persistor;

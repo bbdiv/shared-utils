@@ -1,28 +1,27 @@
-import persistor from "../persistor";
-import { useAuthStore } from "../store/auth";
+import persistor from '../persistor';
+import { useAuthStore } from '../store/auth';
 
-import type { AuthData } from "../store/auth";
-import { useSessionStore } from "../store/session";
-import { refreshToken } from "./auth";
-import { getCustomerList } from "./session";
+import type { AuthData } from '../store/auth';
+import { useSessionStore } from '../store/session';
+import { refreshToken } from './auth';
 
 // save auth data from persistor to zustand store
 const initAuth = async () => {
-  const { value: authData, isStale } = await persistor.getWithMeta("authData");
-  console.log("[PUM] INIT authData from persistor:", authData);
+  const { value: authData, isStale } = await persistor.getWithMeta('authData');
+  console.log('[PUM] INIT authData from persistor:', authData);
 
-  function isValidAuthData(data: any): data is AuthData {
+  function isValidAuthData(data: unknown): data is AuthData {
     return (
-      typeof data === "object" &&
-      typeof data.accessToken === "string" &&
-      typeof data.expiresIn === "number" &&
-      typeof data.idToken === "string" &&
-      typeof data.refreshToken === "string"
+      typeof data === 'object' &&
+      typeof data.accessToken === 'string' &&
+      typeof data.expiresIn === 'number' &&
+      typeof data.idToken === 'string' &&
+      typeof data.refreshToken === 'string'
     );
   }
 
   if (isStale) {
-    console.log("[PUM] Auth data is stale");
+    console.log('[PUM] Auth data is stale');
     await refreshToken();
     return;
   }
@@ -34,13 +33,13 @@ const initAuth = async () => {
 
 // save session data from persistor to zustand store
 const initSession = async () => {
-  const userAccount = await persistor.get("userAccount");
-  const userData = await persistor.get("userData");
-  const customerId = await persistor.get("customerId");
-  const constructionId = await persistor.get("constructionId");
-  const customerList = await persistor.get("customerList");
+  const userAccount = await persistor.get('userAccount');
+  const userData = await persistor.get('userData');
+  const customerId = await persistor.get('customerId');
+  const constructionId = await persistor.get('constructionId');
+  const customerList = await persistor.get('customerList');
 
-  console.log("[PUM] INIT session data from persistor:", {
+  console.log('[PUM] INIT session data from persistor:', {
     userAccount,
     userData,
     customerId,
@@ -52,7 +51,7 @@ const initSession = async () => {
     useSessionStore.getState().setCustomerList(customerList);
   }
 
-  console.log("[PUM] INIT session data from persistor:", {
+  console.log('[PUM] INIT session data from persistor:', {
     userAccount,
     userData,
     customerId,
@@ -77,7 +76,7 @@ const initSession = async () => {
 };
 
 const init = async () => {
-  console.log("[PUM] INIT INIT INIT INIT INIT INIT");
+  console.log('[PUM] INIT INIT INIT INIT INIT INIT');
 
   await initAuth();
   await initSession();
