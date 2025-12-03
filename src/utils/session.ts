@@ -67,3 +67,10 @@ export const saveSelectedCustomer = (customer: any) => {
   setSelectedCustomer(customer);
   setSelectedCustomerId(customer.id);
 };
+
+export const saveSelectedConstruction = (construction: any) => {
+  const { setSelectedConstruction } = useSessionStore.getState();
+
+  persistor.setItem("selectedConstruction", construction);
+  setSelectedConstruction(construction);
+};

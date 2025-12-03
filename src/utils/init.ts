@@ -7,7 +7,7 @@ import { refreshToken } from "./auth";
 import { getCustomerList } from "./session";
 
 // save auth data from persistor to zustand store
-const initAuth = async () => {
+export const initAuth = async () => {
   const { value: authData, isStale } = await persistor.getWithMeta("authData");
   console.log("[PUM] INIT authData from persistor:", authData);
 
@@ -21,31 +21,33 @@ const initAuth = async () => {
     );
   }
 
-  if (isStale) {
-    console.log("[PUM] Auth data is stale");
-    await refreshToken();
-    return;
-  }
+  // if (isStale) {
+  //   console.log("[PUM] Auth data is stale");
+  //   await refreshToken();
+  //   return;
+  // }
 
   if (authData && isValidAuthData(authData)) {
     useAuthStore.getState().setAuth(authData);
   }
+  
+  useAuthStore.getState().setHaveInitialized(true);
 };
 
 // save session data from persistor to zustand store
-const initSession = async () => {
-  const userAccount = await persistor.get("userAccount");
-  const userData = await persistor.get("userData");
-  const selectedCustomerId = await persistor.get("selectedCustomerId");
-  const constructionId = await persistor.get("constructionId");
-  const customerList = await persistor.get("customerList");
-  const selectedCustomer = await persistor.get("selectedCustomer");
+export const initSession = async () => {
+  const {value: userAccount} = await persistor.getWithMeta("userAccount");
+  const {value: userData} = await persistor.getWithMeta("userData");
+  const {value: selectedCustomerId} = await persistor.getWithMeta("selectedCustomerId");
+  const {value: selectedConstruction} = await persistor.getWithMeta("selectedConstruction");
+  const {value: customerList} = await persistor.getWithMeta("customerList");
+  const {value: selectedCustomer} = await persistor.getWithMeta("selectedCustomer");
 
   console.log("[PUM] INIT session data from persistor:", {
     userAccount,
     userData,
     selectedCustomerId,
-    constructionId,
+    selectedConstruction,
     customerList,
     selectedCustomer,
   });
@@ -58,7 +60,7 @@ const initSession = async () => {
     userAccount,
     userData,
     selectedCustomerId,
-    constructionId,
+    selectedConstruction,
     selectedCustomer,
   });
 
@@ -71,8 +73,8 @@ const initSession = async () => {
   if (selectedCustomerId) {
     useSessionStore.getState().setSelectedCustomerId(selectedCustomerId);
   }
-  if (constructionId) {
-    useSessionStore.getState().setConstructionId(constructionId);
+  if (selectedConstruction) {
+    useSessionStore.getState().setSelectedConstruction(selectedConstruction);
   }
   if (customerList) {
     useSessionStore.getState().setCustomerList(customerList);
@@ -80,6 +82,8 @@ const initSession = async () => {
   if (selectedCustomer) {
     useSessionStore.getState().setSelectedCustomer(selectedCustomer);
   }
+
+    useSessionStore.getState().setHaveInitialized(true);
 };
 
 const init = async () => {
@@ -90,4 +94,3 @@ const init = async () => {
 };
 
 export default init;
-export { initAuth };

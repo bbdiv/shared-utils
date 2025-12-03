@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import { initSession } from "../utils/init";
 
 export interface userAccount {
   consent: Record<string, string>[];
@@ -35,8 +36,11 @@ interface SessionStore {
   selectedCustomer: any | null;
   setSelectedCustomer: (customer: any) => void;
 
-  constructionId: string | null;
-  setConstructionId: (id: string) => void;
+  selectedConstruction: any | null;
+  setSelectedConstruction: (construction: any) => void;
+
+  haveInitialized: boolean;
+  setHaveInitialized: (value: boolean) => void;
 
   clearStore: () => void;
 }
@@ -57,8 +61,11 @@ export const useSessionStore = create<SessionStore>((set) => ({
   selectedCustomer: null,
   setSelectedCustomer: (customer: any) => set({ selectedCustomer: customer }),
 
-  constructionId: "",
-  setConstructionId: (id: string) => set({ constructionId: id }),
+  selectedConstruction: null,
+  setSelectedConstruction: (construction: any) => set({ selectedConstruction: construction }),
+
+  haveInitialized: false,
+  setHaveInitialized: (value: boolean) => set({ haveInitialized: value }),
 
   clearStore: () =>
     set({
@@ -72,10 +79,17 @@ export const useSessionStore = create<SessionStore>((set) => ({
     }),
 }));
 
+// let haveInit = false;
+
 //hook for react components
-export const useSession = () =>
-  useSessionStore(
-    useShallow((state) => ({
+export const useSession = (): SessionStore => {
+  if (!useSessionStore.getState().haveInitialized) {
+    console.log("calling init");
+    initSession();
+  }
+
+  return useSessionStore(
+    useShallow((state: SessionStore) => ({
       userAccount: state.userAccount,
       setUserAccount: state.setUserAccount,
       userData: state.userData,
@@ -83,11 +97,12 @@ export const useSession = () =>
       customerList: state.customerList,
       setCustomerList: state.setCustomerList,
       selectedCustomerId: state.selectedCustomerId,
-      setSelectedCustomerId: state.setSelectedCustomerId,
+      // setSelectedCustomerId: state.setSelectedCustomerId,
       selectedCustomer: state.selectedCustomer,
-      setSelectedCustomer: state.setSelectedCustomer,
-      constructionId: state.constructionId,
-      setConstructionId: state.setConstructionId,
+      // setSelectedCustomer: state.setSelectedCustomer,
+      selectedConstruction: state.selectedConstruction,
+      // setSelectedConstruction: state.setSelectedConstruction,
       clearStore: state.clearStore,
     }))
   );
+};
