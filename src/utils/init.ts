@@ -36,7 +36,7 @@ const initAuth = async () => {
 const initSession = async () => {
   const userAccount = await persistor.get("userAccount");
   const userData = await persistor.get("userData");
-  const customerId = await persistor.get("customerId");
+  const selectedCustomerId = await persistor.get("selectedCustomerId");
   const constructionId = await persistor.get("constructionId");
   const customerList = await persistor.get("customerList");
   const selectedCustomer = await persistor.get("selectedCustomer");
@@ -44,7 +44,7 @@ const initSession = async () => {
   console.log("[PUM] INIT session data from persistor:", {
     userAccount,
     userData,
-    customerId,
+    selectedCustomerId,
     constructionId,
     customerList,
     selectedCustomer,
@@ -57,7 +57,7 @@ const initSession = async () => {
   console.log("[PUM] INIT session data from persistor:", {
     userAccount,
     userData,
-    customerId,
+    selectedCustomerId,
     constructionId,
     selectedCustomer,
   });
@@ -68,8 +68,8 @@ const initSession = async () => {
   if (userData) {
     useSessionStore.getState().setUserData(userData);
   }
-  if (customerId) {
-    useSessionStore.getState().setCustomerId(customerId);
+  if (selectedCustomerId) {
+    useSessionStore.getState().setSelectedCustomerId(selectedCustomerId);
   }
   if (constructionId) {
     useSessionStore.getState().setConstructionId(constructionId);

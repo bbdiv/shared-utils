@@ -56,18 +56,14 @@ export const getCustomerList = async (email: string, module?: string) => {
   }
 };
 
-export const saveCustomerId = (customerId: string) => {
-  persistor.setItem("customerId", customerId);
 
-  useSessionStore.getState().setCustomerId(customerId);
-};
 
 export const saveSelectedCustomer = (customer: any) => {
-  const { setSelectedCustomer, setCustomerId } = useSessionStore.getState();
+  const { setSelectedCustomer, setSelectedCustomerId } = useSessionStore.getState();
 
   persistor.setItem("selectedCustomer", customer);
-  persistor.setItem("customerId", customer.id);
+  persistor.setItem("selectedCustomerId", customer.id);
 
   setSelectedCustomer(customer);
-  setCustomerId(customer.id);
+  setSelectedCustomerId(customer.id);
 };
