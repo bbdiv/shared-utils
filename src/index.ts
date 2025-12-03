@@ -21,7 +21,12 @@ export * from "./persistor";
 //components
 export { default as PrivateRoute } from "./components/PrivateRoute";
 
-init();
+// Initialize auth and session data
+// Errors are handled internally, so we don't need to await or catch here
+init().catch((error) => {
+  // Catch any unhandled errors during initialization to prevent unhandled promise rejection
+  console.error("Failed to initialize shared-utils:", error);
+});
 
 //
 //

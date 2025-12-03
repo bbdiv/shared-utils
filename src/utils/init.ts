@@ -23,7 +23,13 @@ const initAuth = async () => {
 
   if (isStale) {
     console.log("[PUM] Auth data is stale");
-    await refreshToken();
+    try {
+      await refreshToken();
+    } catch (error) {
+      // refreshToken already handles redirect to /login on error
+      // Silently fail during initialization to prevent unhandled promise rejection
+      console.error("[PUM] Failed to refresh token during initialization:", error);
+    }
     return;
   }
 
