@@ -19,8 +19,7 @@ export const saveAuth = (authData: AuthData) => {
   setCookie("refreshToken", authData.refreshToken, 30, domain);
   setCookie("idToken", authData.idToken, 1, domain);
 
-  // persistor.setItem("authData", authData, 1 * 1000 * 60 * 60 ); //stale time 1 hour
-  persistor.setItem("authData", authData, 1 * 1000 * 10 ); //stale time 10 sec
+  persistor.setItem("authData", authData, 1 * 1000 * 60 * 60 ); //stale time 1 hour
 };
 
 export const login = async (credentials: {
@@ -57,6 +56,7 @@ export const refreshToken = async () => {
     );
     saveAuth(response.data.data);
     console.log("response", response);
+    return response.data.data;
   } catch (error) {
     console.log("error refreshing token", error);
     if (window.location.pathname !== "/login") window.location.href = "/login";
