@@ -18,7 +18,8 @@ export { useShallow };
 //persistor
 export * from "./persistor";
 
-init();
+
+// init();
 
 //
 //

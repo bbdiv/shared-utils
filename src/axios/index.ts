@@ -1,5 +1,5 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import { requestInterceptor } from "./interceptors";
+import { errorInterceptor, requestInterceptor } from "./interceptors";
 import apiEnvironments from "./environments";
 
 export const ssoInstance = (
@@ -31,6 +31,6 @@ export const suiteInstance = (
       ...(configs?.headers ?? {}),
     },
   });
-  instance.interceptors.request.use(requestInterceptor);
+  instance.interceptors.request.use(requestInterceptor, errorInterceptor);
   return instance;
 };

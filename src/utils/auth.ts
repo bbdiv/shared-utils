@@ -1,6 +1,7 @@
 import persistor from "../persistor";
 import { useAuthStore, type AuthData } from "../store/auth";
-import { setCookie } from "./cookies";
+import { useSessionStore } from "../store/session";
+import { deleteCookie, setCookie } from "./cookies";
 import { ssoInstance } from "@axios";
 
 /**
@@ -20,7 +21,7 @@ export const saveAuth = (authData: AuthData) => {
   setCookie("idToken", authData.idToken, 1, domain);
 
   // persistor.setItem("authData", authData, 1 * 1000 * 60 * 60 ); //stale time 1 hour
-  persistor.setItem("authData", authData, 1 * 1000 * 10 ); //stale time 10 sec
+  persistor.setItem("authData", authData, 1 * 1000 * 60 * 10 ); //stale time 10min
 };
 
 export const login = async (credentials: {
@@ -57,12 +58,34 @@ export const refreshToken = async () => {
     );
     saveAuth(response.data.data);
     console.log("response", response);
+    return response.data.data;
   } catch (error) {
     console.log("error refreshing token", error);
     if (window.location.pathname !== "/login") window.location.href = "/login";
+    // Throw the error so callers can handle it appropriately
+    throw error;
   }
 };
 
 // export const clearAuth = () => {}
 
-// export const logout = () => {}
+export const logout = () => {
+ 
+
+  deleteCookie("accessToken");
+  deleteCookie("refreshToken");
+  deleteCookie("idToken");
+ 
+  persistor.removeItem("authData");
+  persistor.removeItem("selectedCustomer");
+  persistor.removeItem("selectedConstruction");
+  persistor.removeItem("userAccount");
+  persistor.removeItem("userData");
+ 
+ 
+  useAuthStore.getState().clearAuth();
+  useSessionStore.getState().clearStore();
+ 
+  window.location.href = "/login";
+}
+ 

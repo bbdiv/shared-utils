@@ -4,10 +4,10 @@ import { useAuthStore } from "../store/auth";
 import type { AuthData } from "../store/auth";
 import { useSessionStore } from "../store/session";
 import { refreshToken } from "./auth";
-import { getCustomerList } from "./session";
+import { getAccountData, getCustomerList, getUserData } from "./session";
 
 // save auth data from persistor to zustand store
-const initAuth = async () => {
+export const initAuth = async () => {
   const { value: authData, isStale } = await persistor.getWithMeta("authData");
   console.log("[PUM] INIT authData from persistor:", authData);
 
@@ -21,65 +21,66 @@ const initAuth = async () => {
     );
   }
 
-  if (isStale) {
-    console.log("[PUM] Auth data is stale");
-    await refreshToken();
-    return;
-  }
+  // if (isStale) {
+  //   console.log("[PUM] Auth data is stale");
+  //   await refreshToken();
+  //   return;
+  // }
 
   if (authData && isValidAuthData(authData)) {
     useAuthStore.getState().setAuth(authData);
   }
+  
+  useAuthStore.getState().setHaveInitialized(true);
 };
 
 // save session data from persistor to zustand store
-const initSession = async () => {
-  const userAccount = await persistor.get("userAccount");
-  const userData = await persistor.get("userData");
-  const selectedCustomerId = await persistor.get("selectedCustomerId");
-  const constructionId = await persistor.get("constructionId");
-  const customerList = await persistor.get("customerList");
-  const selectedCustomer = await persistor.get("selectedCustomer");
+export const initSession = async () => {
+  const {value: userAccount, isStale: userAccountIsStale} = await persistor.getWithMeta("userAccount");
+  const {value: userData, isStale: userDataIsStale} = await persistor.getWithMeta("userData");
 
-  console.log("[PUM] INIT session data from persistor:", {
-    userAccount,
-    userData,
-    selectedCustomerId,
-    constructionId,
-    customerList,
-    selectedCustomer,
-  });
+  const {value: selectedConstruction} = await persistor.getWithMeta("selectedConstruction");
+  const {value: selectedCustomer} = await persistor.getWithMeta("selectedCustomer");
 
-  if (customerList) {
-    useSessionStore.getState().setCustomerList(customerList);
-  }
 
-  console.log("[PUM] INIT session data from persistor:", {
-    userAccount,
-    userData,
-    selectedCustomerId,
-    constructionId,
-    selectedCustomer,
-  });
 
-  if (userAccount) {
+
+  if(userAccountIsStale) {
+     console.log("[PUM] userAccount is stale");
+    useSessionStore.getState().setIsFetchingUserAccount(true);
+    getAccountData(useAuthStore.getState().auth?.idToken, userAccount.email).then(data=>{
+      useSessionStore.getState().setUserAccount(data);
+      persistor.setItem("userAccount", data, 10 * 60 * 1000 * 6 ); // 1 hour
+    });
+
+  }else{
     useSessionStore.getState().setUserAccount(userAccount);
   }
-  if (userData) {
+
+
+
+  if(userDataIsStale) {
+    console.log("[PUM] userData is stale");
+    getUserData(userData.email).then(data=>{
+      useSessionStore.getState().setUserData(data);
+      persistor.setItem("userData", data, 10 * 60 * 1000 * 6); // 1 hour
+    });
+  }else{
     useSessionStore.getState().setUserData(userData);
   }
-  if (selectedCustomerId) {
-    useSessionStore.getState().setSelectedCustomerId(selectedCustomerId);
+
+
+
+
+  if (selectedConstruction) {
+    useSessionStore.getState().setSelectedConstruction(selectedConstruction);
   }
-  if (constructionId) {
-    useSessionStore.getState().setConstructionId(constructionId);
-  }
-  if (customerList) {
-    useSessionStore.getState().setCustomerList(customerList);
-  }
+
   if (selectedCustomer) {
     useSessionStore.getState().setSelectedCustomer(selectedCustomer);
   }
+
+    useSessionStore.getState().setHaveInitialized(true);
 };
 
 const init = async () => {
@@ -90,4 +91,3 @@ const init = async () => {
 };
 
 export default init;
-export { initAuth };

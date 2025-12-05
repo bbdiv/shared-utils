@@ -7,6 +7,13 @@ export default defineConfig({
       '@axios/': '/src/axios/'
     }
   },
+  // Define process.env polyfill for browser compatibility
+  // This replaces process.env references at build time to prevent "process is not defined" errors
+  // when using React components that reference process.env.NODE_ENV
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+    'process.env': JSON.stringify({ NODE_ENV: process.env.NODE_ENV || 'production' })
+  },
   build: {
     lib: {
       entry: 'src/index.ts',
@@ -16,7 +23,12 @@ export default defineConfig({
     outDir: 'dist',
     target: 'esnext',
     rollupOptions: {
-      external: ['react']
+      external: ['react'],
+      // Inject process global variable at the beginning of the bundle
+      // This provides a runtime polyfill for process.env when code accesses process directly
+      output: {
+        intro: `var process = { env: { NODE_ENV: ${JSON.stringify(process.env.NODE_ENV || 'production')} } };`
+      }
     }
   },
   server: {

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import { initSession } from "../utils/init";
 
 export interface userAccount {
   consent: Record<string, string>[];
@@ -22,21 +23,22 @@ export interface UserData {
 interface SessionStore {
   userAccount: userAccount | null;
   setUserAccount: (data: userAccount) => void;
+  isFetchingUserAccount: boolean;
+  setIsFetchingUserAccount: (value: boolean) => void;
 
   userData: UserData | null;
   setUserData: (data: UserData) => void;
-
-  customerList: any[] | null;
-  setCustomerList: (list: any[]) => void;
-
-  selectedCustomerId: string | null;
-  setSelectedCustomerId: (id: string) => void;
+  isFetchingUserData: boolean;
+  setIsFetchingUserData: (value: boolean) => void;
 
   selectedCustomer: any | null;
   setSelectedCustomer: (customer: any) => void;
 
-  constructionId: string | null;
-  setConstructionId: (id: string) => void;
+  selectedConstruction: any | null;
+  setSelectedConstruction: (construction: any) => void;
+
+  haveInitialized: boolean;
+  setHaveInitialized: (value: boolean) => void;
 
   clearStore: () => void;
 }
@@ -44,50 +46,61 @@ interface SessionStore {
 export const useSessionStore = create<SessionStore>((set) => ({
   userAccount: null,
   setUserAccount: (data: userAccount) => set({ userAccount: data }),
+  isFetchingUserAccount: false,
+  setIsFetchingUserAccount: (value: boolean) => set({ isFetchingUserAccount: value }),
 
   userData: null,
   setUserData: (data: UserData) => set({ userData: data }),
+  isFetchingUserData: false,
+  setIsFetchingUserData: (value: boolean) => set({ isFetchingUserData: value }),
 
-  customerList: [],
-  setCustomerList: (list: any[]) => set({ customerList: list }),
-
-  selectedCustomerId: "",
-  setSelectedCustomerId: (id: string) => set({ selectedCustomerId: id }),
 
   selectedCustomer: null,
   setSelectedCustomer: (customer: any) => set({ selectedCustomer: customer }),
 
-  constructionId: "",
-  setConstructionId: (id: string) => set({ constructionId: id }),
+  selectedConstruction: null,
+  setSelectedConstruction: (construction: any) => set({ selectedConstruction: construction }),
+
+  haveInitialized: false,
+  setHaveInitialized: (value: boolean) => set({ haveInitialized: value }),
+
+
+
 
   clearStore: () =>
     set({
       userAccount: null,
       userData: null,
-      selectedCustomerId: "",
-      customerList: [],
-      constructionId: "",
       selectedCustomer: null,
-     
+      selectedConstruction: null,
+      isFetchingUserAccount: false,
+      isFetchingUserData: false,
     }),
 }));
 
+// let haveInit = false;
+
 //hook for react components
-export const useSession = () =>
-  useSessionStore(
-    useShallow((state) => ({
+export const useSession = (): Omit<SessionStore, "setSelectedCustomerId" | "setSelectedCustomer" | "setSelectedConstruction" | "setHaveInitialized"> => {
+  if (!useSessionStore.getState().haveInitialized) {
+    console.log("calling init");
+    initSession();
+  }
+
+  return useSessionStore(
+    useShallow((state: SessionStore) => ({
       userAccount: state.userAccount,
       setUserAccount: state.setUserAccount,
+      isFetchingUserAccount: state.isFetchingUserAccount,
+      // setIsFetchingUserAccount: state.setIsFetchingUserAccount,
       userData: state.userData,
+      isFetchingUserData: state.isFetchingUserData,
+      // setIsFetchingUserData: state.setIsFetchingUserData,
       setUserData: state.setUserData,
-      customerList: state.customerList,
-      setCustomerList: state.setCustomerList,
-      selectedCustomerId: state.selectedCustomerId,
-      setSelectedCustomerId: state.setSelectedCustomerId,
       selectedCustomer: state.selectedCustomer,
-      setSelectedCustomer: state.setSelectedCustomer,
-      constructionId: state.constructionId,
-      setConstructionId: state.setConstructionId,
+      selectedConstruction: state.selectedConstruction,
+      haveInitialized: state.haveInitialized,
       clearStore: state.clearStore,
     }))
   );
+};
