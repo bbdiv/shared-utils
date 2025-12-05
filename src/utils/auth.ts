@@ -58,6 +58,7 @@ export const refreshToken = async () => {
     );
     saveAuth(response.data.data);
     console.log("response", response);
+    return response.data.data;
   } catch (error) {
     console.log("error refreshing token", error);
     if (window.location.pathname !== "/login") window.location.href = "/login";

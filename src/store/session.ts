@@ -73,7 +73,7 @@ export const useSessionStore = create<SessionStore>((set) => ({
       userData: null,
       selectedCustomerId: "",
       customerList: [],
-      constructionId: "",
+      selectedConstruction: "",
       selectedCustomer: null,
      
     }),
@@ -82,7 +82,7 @@ export const useSessionStore = create<SessionStore>((set) => ({
 // let haveInit = false;
 
 //hook for react components
-export const useSession = (): SessionStore => {
+export const useSession = (): Omit<SessionStore, "setSelectedCustomerId" | "setSelectedCustomer" | "setSelectedConstruction" | "setHaveInitialized"> => {
   if (!useSessionStore.getState().haveInitialized) {
     console.log("calling init");
     initSession();
@@ -102,6 +102,7 @@ export const useSession = (): SessionStore => {
       // setSelectedCustomer: state.setSelectedCustomer,
       selectedConstruction: state.selectedConstruction,
       // setSelectedConstruction: state.setSelectedConstruction,
+      haveInitialized: state.haveInitialized,
       clearStore: state.clearStore,
     }))
   );
