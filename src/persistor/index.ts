@@ -14,6 +14,7 @@ const createPersistor = <T = unknown>(
 
   // Common logic for determining if data is stale
   const isDataStale = (timestamp: number): boolean => {
+    
     const isStale = Date.now() > timestamp;
     return isStale;
   };

@@ -19,8 +19,8 @@ export const saveUserLogin = (
   sessionStore.setUserData(userData);
  
 
-  persistor.setItem("userAccount", userAccount,10 * 60 * 1000 * 6); // 1 hour
-  persistor.setItem("userData", userData,10 * 60 * 1000 * 6); // 1 hour
+  persistor.setItem("userAccount", userAccount,10 ); // 1 hour
+  persistor.setItem("userData", userData,10 ); // 1 hour
  
 };
 
