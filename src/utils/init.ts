@@ -50,7 +50,7 @@ export const initSession = async () => {
     useSessionStore.getState().setIsFetchingUserAccount(true);
     getAccountData(useAuthStore.getState().auth?.idToken, userAccount.email).then(data=>{
       useSessionStore.getState().setUserAccount(data);
-      persistor.setItem("userAccount", data, 10 ); // 1 hour
+      persistor.setItem("userAccount", data, 10 * 60 * 1000 * 6 ); // 1 hour
     });
 
   }else{
@@ -63,7 +63,7 @@ export const initSession = async () => {
     console.log("[PUM] userData is stale");
     getUserData(userData.email).then(data=>{
       useSessionStore.getState().setUserData(data);
-      persistor.setItem("userData", data, 10 ); // 1 hour
+      persistor.setItem("userData", data, 10 * 60 * 1000 * 6); // 1 hour
     });
   }else{
     useSessionStore.getState().setUserData(userData);
