@@ -1,7 +1,7 @@
 import persistor from "../persistor";
 import { useAuthStore, type AuthData } from "../store/auth";
 import { useSessionStore } from "../store/session";
-import { removeCookie, setCookie } from "./cookies";
+import { deleteCookie, setCookie } from "./cookies";
 import { ssoInstance } from "@axios";
 
 /**
@@ -71,14 +71,14 @@ export const refreshToken = async () => {
 
 export const logout = () => {
  
-  removeCookie("accessToken");
-  removeCookie("refreshToken");
-  removeCookie("idToken");
+
+  deleteCookie("accessToken");
+  deleteCookie("refreshToken");
+  deleteCookie("idToken");
  
   persistor.removeItem("authData");
-  persistor.removeItem("customerList");
   persistor.removeItem("selectedCustomer");
-  persistor.removeItem("selectedCustomerId");
+  persistor.removeItem("selectedConstruction");
   persistor.removeItem("userAccount");
   persistor.removeItem("userData");
  

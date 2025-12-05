@@ -27,12 +27,6 @@ interface SessionStore {
   userData: UserData | null;
   setUserData: (data: UserData) => void;
 
-  customerList: any[] | null;
-  setCustomerList: (list: any[]) => void;
-
-  selectedCustomerId: string | null;
-  setSelectedCustomerId: (id: string) => void;
-
   selectedCustomer: any | null;
   setSelectedCustomer: (customer: any) => void;
 
@@ -52,11 +46,6 @@ export const useSessionStore = create<SessionStore>((set) => ({
   userData: null,
   setUserData: (data: UserData) => set({ userData: data }),
 
-  customerList: [],
-  setCustomerList: (list: any[]) => set({ customerList: list }),
-
-  selectedCustomerId: "",
-  setSelectedCustomerId: (id: string) => set({ selectedCustomerId: id }),
 
   selectedCustomer: null,
   setSelectedCustomer: (customer: any) => set({ selectedCustomer: customer }),
@@ -71,11 +60,8 @@ export const useSessionStore = create<SessionStore>((set) => ({
     set({
       userAccount: null,
       userData: null,
-      selectedCustomerId: "",
-      customerList: [],
-      selectedConstruction: "",
       selectedCustomer: null,
-     
+      selectedConstruction: null,
     }),
 }));
 
@@ -94,14 +80,9 @@ export const useSession = (): Omit<SessionStore, "setSelectedCustomerId" | "setS
       setUserAccount: state.setUserAccount,
       userData: state.userData,
       setUserData: state.setUserData,
-      customerList: state.customerList,
-      setCustomerList: state.setCustomerList,
-      selectedCustomerId: state.selectedCustomerId,
-      // setSelectedCustomerId: state.setSelectedCustomerId,
+
       selectedCustomer: state.selectedCustomer,
-      // setSelectedCustomer: state.setSelectedCustomer,
       selectedConstruction: state.selectedConstruction,
-      // setSelectedConstruction: state.setSelectedConstruction,
       haveInitialized: state.haveInitialized,
       clearStore: state.clearStore,
     }))

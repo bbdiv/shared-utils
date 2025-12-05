@@ -1,4 +1,4 @@
-import { suiteInstance } from "@axios";
+import { ssoInstance, suiteInstance } from "@axios";
 import addParamsToUrl from "./addParamsToUrl";
 import {
   useSessionStore,
@@ -6,29 +6,25 @@ import {
   type UserData,
 } from "../store/session";
 import persistor from "../persistor";
+import { logout } from "./auth";
 
 export const saveUserLogin = (
   userAccount: userAccount,
   userData: UserData,
-  customerList: any[]
+ 
 ) => {
   const sessionStore = useSessionStore.getState();
 
   sessionStore.setUserAccount(userAccount);
   sessionStore.setUserData(userData);
-  sessionStore.setCustomerList(customerList);
+ 
 
   persistor.setItem("userAccount", userAccount);
   persistor.setItem("userData", userData);
-  persistor.setItem("customerList", customerList);
+ 
 };
 
-export const saveCustomerList = (customerList: any[]) => {
-  const sessionStore = useSessionStore.getState();
-  sessionStore.setCustomerList(customerList);
 
-  persistor.setItem("customerList", customerList);
-};
 
 export const getCustomerList = async (email: string, module?: string) => {
   console.log("[PUM] email:", email, "module:", module);
@@ -44,7 +40,7 @@ export const getCustomerList = async (email: string, module?: string) => {
     );
     console.log("[PUM] getCustomerList response:", response);
     if (response.status === 200) {
-      saveCustomerList(response.data.data);
+   
       return response.data.data;
     } else {
       const error = new Error("Failed to fetch customer list");
@@ -59,13 +55,11 @@ export const getCustomerList = async (email: string, module?: string) => {
 
 
 export const saveSelectedCustomer = (customer: any) => {
-  const { setSelectedCustomer, setSelectedCustomerId } = useSessionStore.getState();
+  const { setSelectedCustomer } = useSessionStore.getState();
 
   persistor.setItem("selectedCustomer", customer);
-  persistor.setItem("selectedCustomerId", customer.id);
 
   setSelectedCustomer(customer);
-  setSelectedCustomerId(customer.id);
 };
 
 export const saveSelectedConstruction = (construction: any) => {
@@ -74,3 +68,54 @@ export const saveSelectedConstruction = (construction: any) => {
   persistor.setItem("selectedConstruction", construction);
   setSelectedConstruction(construction);
 };
+
+
+//dados do usuario vindos do sso (userAccount)
+export const getAccountData = async (idToken: string,email: string) => {
+
+
+try {
+  
+  const response = await ssoInstance().get(`/account/${email}`, {
+    withCredentials: true,
+    headers: {
+      "Authorization": idToken,
+    },
+
+  });
+
+  console.log("[PUM] getAccountData response:", response);
+//usar o save? ou setar direto pra n precisar editar as outras funcoes?
+
+  return response.data.data;
+
+
+} catch (error) {
+  console.error("[PUM] Error fetching account data:", error);
+  logout();
+
+}
+
+ 
+
+
+}
+
+
+//dados do usuario vindos do suite (userData)
+export const getUserData = async (email: string) => {
+
+  try {
+    
+    const response = await suiteInstance("", "v1").get(`/users/email/${email}`);
+    console.log("[PUM] getUserData response:", response);
+     return response.data.data;
+
+
+  } catch (error) {
+    console.error("[PUM] Error fetching user data:", error);
+    logout();
+  }
+
+
+}

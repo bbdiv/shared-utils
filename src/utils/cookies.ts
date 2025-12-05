@@ -22,6 +22,11 @@ export function getCookie(name: string): string | null {
   return null;
 }
 
-export function removeCookie(name: string) {
-  setCookie(name, "", -1);
+
+export function deleteCookie(name: string) {
+  document.cookie = `${name}=;expires=Thu, 01 Jan 2010 00:00:00 UTC;path=/;domain=.autodocdev.com`;
+  document.cookie = `${name}=;expires=Thu, 01 Jan 2010 00:00:00 UTC;path=/;domain=.autodoc.com.br`;
+  document.cookie = `${name}=;expires=Thu, 01 Jan 2010 00:00:00 UTC;`;
 }
+ 
+ 

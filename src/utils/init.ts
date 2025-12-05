@@ -38,28 +38,20 @@ export const initAuth = async () => {
 export const initSession = async () => {
   const {value: userAccount} = await persistor.getWithMeta("userAccount");
   const {value: userData} = await persistor.getWithMeta("userData");
-  const {value: selectedCustomerId} = await persistor.getWithMeta("selectedCustomerId");
   const {value: selectedConstruction} = await persistor.getWithMeta("selectedConstruction");
-  const {value: customerList} = await persistor.getWithMeta("customerList");
   const {value: selectedCustomer} = await persistor.getWithMeta("selectedCustomer");
 
   console.log("[PUM] INIT session data from persistor:", {
     userAccount,
     userData,
-    selectedCustomerId,
     selectedConstruction,
-    customerList,
     selectedCustomer,
   });
 
-  if (customerList) {
-    useSessionStore.getState().setCustomerList(customerList);
-  }
 
   console.log("[PUM] INIT session data from persistor:", {
     userAccount,
     userData,
-    selectedCustomerId,
     selectedConstruction,
     selectedCustomer,
   });
@@ -70,15 +62,11 @@ export const initSession = async () => {
   if (userData) {
     useSessionStore.getState().setUserData(userData);
   }
-  if (selectedCustomerId) {
-    useSessionStore.getState().setSelectedCustomerId(selectedCustomerId);
-  }
+
   if (selectedConstruction) {
     useSessionStore.getState().setSelectedConstruction(selectedConstruction);
   }
-  if (customerList) {
-    useSessionStore.getState().setCustomerList(customerList);
-  }
+
   if (selectedCustomer) {
     useSessionStore.getState().setSelectedCustomer(selectedCustomer);
   }
