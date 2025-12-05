@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/auth";
 import type { AuthData } from "../store/auth";
 import { useSessionStore } from "../store/session";
 import { refreshToken } from "./auth";
-import { getCustomerList } from "./session";
+import { getAccountData, getCustomerList, getUserData } from "./session";
 
 // save auth data from persistor to zustand store
 export const initAuth = async () => {
@@ -36,32 +36,38 @@ export const initAuth = async () => {
 
 // save session data from persistor to zustand store
 export const initSession = async () => {
-  const {value: userAccount} = await persistor.getWithMeta("userAccount");
-  const {value: userData} = await persistor.getWithMeta("userData");
+  const {value: userAccount, isStale: userAccountIsStale} = await persistor.getWithMeta("userAccount");
+  const {value: userData, isStale: userDataIsStale} = await persistor.getWithMeta("userData");
+
   const {value: selectedConstruction} = await persistor.getWithMeta("selectedConstruction");
   const {value: selectedCustomer} = await persistor.getWithMeta("selectedCustomer");
 
-  console.log("[PUM] INIT session data from persistor:", {
-    userAccount,
-    userData,
-    selectedConstruction,
-    selectedCustomer,
-  });
 
 
-  console.log("[PUM] INIT session data from persistor:", {
-    userAccount,
-    userData,
-    selectedConstruction,
-    selectedCustomer,
-  });
 
-  if (userAccount) {
+  if(userAccountIsStale) {
+    getAccountData(useAuthStore.getState().auth?.idToken, userAccount.email).then(data=>{
+      useSessionStore.getState().setUserAccount(data);
+      persistor.setItem("userAccount", data, 10 * 60 * 1000 * 6); // 1 hour
+    });
+
+  }else{
     useSessionStore.getState().setUserAccount(userAccount);
   }
-  if (userData) {
+
+
+
+  if(userDataIsStale) {
+    getUserData(userData.email).then(data=>{
+      useSessionStore.getState().setUserData(data);
+      persistor.setItem("userData", data, 10 * 60 * 1000 * 6); // 1 hour
+    });
+  }else{
     useSessionStore.getState().setUserData(userData);
   }
+
+
+
 
   if (selectedConstruction) {
     useSessionStore.getState().setSelectedConstruction(selectedConstruction);

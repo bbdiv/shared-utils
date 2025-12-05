@@ -19,8 +19,8 @@ export const saveUserLogin = (
   sessionStore.setUserData(userData);
  
 
-  persistor.setItem("userAccount", userAccount);
-  persistor.setItem("userData", userData);
+  persistor.setItem("userAccount", userAccount,10 * 60 * 1000 * 6); // 1 hour
+  persistor.setItem("userData", userData,10 * 60 * 1000 * 6); // 1 hour
  
 };
 
@@ -72,10 +72,7 @@ export const saveSelectedConstruction = (construction: any) => {
 
 //dados do usuario vindos do sso (userAccount)
 export const getAccountData = async (idToken: string,email: string) => {
-
-
 try {
-  
   const response = await ssoInstance().get(`/account/${email}`, {
     withCredentials: true,
     headers: {

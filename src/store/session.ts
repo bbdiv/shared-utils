@@ -23,9 +23,13 @@ export interface UserData {
 interface SessionStore {
   userAccount: userAccount | null;
   setUserAccount: (data: userAccount) => void;
+  isFetchingUserAccount: boolean;
+  setIsFetchingUserAccount: (value: boolean) => void;
 
   userData: UserData | null;
   setUserData: (data: UserData) => void;
+  isFetchingUserData: boolean;
+  setIsFetchingUserData: (value: boolean) => void;
 
   selectedCustomer: any | null;
   setSelectedCustomer: (customer: any) => void;
@@ -42,9 +46,13 @@ interface SessionStore {
 export const useSessionStore = create<SessionStore>((set) => ({
   userAccount: null,
   setUserAccount: (data: userAccount) => set({ userAccount: data }),
+  isFetchingUserAccount: false,
+  setIsFetchingUserAccount: (value: boolean) => set({ isFetchingUserAccount: value }),
 
   userData: null,
   setUserData: (data: UserData) => set({ userData: data }),
+  isFetchingUserData: false,
+  setIsFetchingUserData: (value: boolean) => set({ isFetchingUserData: value }),
 
 
   selectedCustomer: null,
@@ -56,12 +64,17 @@ export const useSessionStore = create<SessionStore>((set) => ({
   haveInitialized: false,
   setHaveInitialized: (value: boolean) => set({ haveInitialized: value }),
 
+
+
+
   clearStore: () =>
     set({
       userAccount: null,
       userData: null,
       selectedCustomer: null,
       selectedConstruction: null,
+      isFetchingUserAccount: false,
+      isFetchingUserData: false,
     }),
 }));
 
@@ -78,9 +91,12 @@ export const useSession = (): Omit<SessionStore, "setSelectedCustomerId" | "setS
     useShallow((state: SessionStore) => ({
       userAccount: state.userAccount,
       setUserAccount: state.setUserAccount,
+      isFetchingUserAccount: state.isFetchingUserAccount,
+      // setIsFetchingUserAccount: state.setIsFetchingUserAccount,
       userData: state.userData,
+      isFetchingUserData: state.isFetchingUserData,
+      // setIsFetchingUserData: state.setIsFetchingUserData,
       setUserData: state.setUserData,
-
       selectedCustomer: state.selectedCustomer,
       selectedConstruction: state.selectedConstruction,
       haveInitialized: state.haveInitialized,
